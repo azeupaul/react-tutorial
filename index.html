@@ -10,8 +10,21 @@
     <script type="text/javascript" src="react-15.6.0.js"></script>
     <script type="text/javascript" src="react-dom-15.6.0.js"></script>
     <script type="text/javascript">
+      var rootElement = React.createElement('div', {},
+        React.createElement('h1', {}, 'Contacts'),
+        React.createElement('ul', {},
+          React.createElement('li', {},
+            React.createElement('h2', {}, 'John Doe'),
+            React.createElement('a', {href: 'mailto: johndoe@maildev.com'}, 'johndoe@maildev.com')
+          ),
+          React.createElement('li', {},
+            React.createElement('h2', {}, "Pablo Azeu"),
+            React.createElement('a', {href: 'mailto: paulazeu@maildev.com'}, 'paulazeu@maildev.com')
+          )
+        )
+      )
       ReactDOM.render(
-        React.createElement('h1', {}, 'Hello world!'),
+        rootElement,
         document.getElementById('app')
       );
     </script>
