@@ -13,10 +13,10 @@ var ContactItem = React.createClass({
     description: React.PropTypes.string
   },
   render: function(){
-    return React.createElement('li', {},
-      React.createElement('h2', {}, this.props.name),
-      React.createElement('a', {href: 'mailto: ' + this.props.email}, this.props.email),
-      React.createElement('div', {}, this.props.description)
+    return React.createElement('li', {className: 'ContactItem'},
+      React.createElement('h2', {className: 'ContactItem-name'}, this.props.name),
+      React.createElement('a', {href: 'mailto: ' + this.props.email, className: 'ContactItem-email'}, this.props.email),
+      React.createElement('div', {className: 'ContactItem-description'}, this.props.description)
     )
   }
 })
@@ -27,7 +27,7 @@ var ContactForm = React.createClass({
     contact: React.PropTypes.object.isRequired
   },
   render: function(){
-    return React.createElement('form', {},
+    return React.createElement('form', {className: 'ContactForm'},
       React.createElement('input', {placeholder: 'Name (required)', value: this.props.contact.name, type: 'text'}),
       React.createElement('input', {placeholder: 'Email (required)', value: this.props.contact.email, type: 'email'}),
       React.createElement('textarea', {placeholder: 'Description', value: this.props.contact.description}, ''),
@@ -44,10 +44,10 @@ for(var i = 0; i < contacts.length; i++){
 
 var newContact = {name: "", email: "", description: ""}
 
-var rootElement = React.createElement('div', {},
-  React.createElement('h1', {}, 'Contacts'),
+var rootElement = React.createElement('div', {className: 'ContactView'},
+  React.createElement('h1', {className: 'ContactView-title'}, 'Contacts'),
   React.createElement(ContactForm, {contact: newContact}),
-  React.createElement('ul', {}, contactItemList)
+  React.createElement('ul', {className: 'ContactView-list'}, contactItemList)
 )
 ReactDOM.render(
   rootElement,
