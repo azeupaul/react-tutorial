@@ -36,20 +36,36 @@ var ContactForm = React.createClass({
   }
 })
 
-var contactItemList = []
+// ContactView for embedding form and listview
+var ContactView = React.createClass({
+  propTypes: {
+    contacts: React.PropTypes.array.isRequired,
+    newContact: React.PropTypes.object.isRequired,
+  },
 
-for(var i = 0; i < contacts.length; i++){
-  contactItemList.push(React.createElement(ContactItem, contacts[i]))
-}
+  render: function() {
+    var contactItemList = []
+
+    for(var i = 0; i < contacts.length; i++){
+      contactItemList.push(React.createElement(ContactItem, contacts[i]))
+    }
+
+    return (
+      React.createElement('div', {className: 'ContactView'},
+        React.createElement('h1', {className: 'ContactView-title'}, "Contacts"),
+        React.createElement('ul', {className: 'ContactView-list'}, contactItemList),
+        React.createElement(ContactForm, {contact: this.props.newContact})
+      )
+    )
+  },
+})
 
 var newContact = {name: "", email: "", description: ""}
 
-var rootElement = React.createElement('div', {className: 'ContactView'},
-  React.createElement('h1', {className: 'ContactView-title'}, 'Contacts'),
-  React.createElement(ContactForm, {contact: newContact}),
-  React.createElement('ul', {className: 'ContactView-list'}, contactItemList)
-)
 ReactDOM.render(
-  rootElement,
+  React.createElement(ContactView, {
+    contacts: contacts,
+    newContact: newContact
+  }),
   document.getElementById('app')
 );
