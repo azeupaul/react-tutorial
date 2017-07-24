@@ -1,15 +1,8 @@
-// List of contacts
-var contacts = [
-  {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
-  {key: 2, name: "Pablo Azeu", email: "paulazeu@maildev.com"},
-  {key: 3, name: "Joe Doe"},
-]
-
 // ContactItem Component
 var ContactItem = React.createClass({
   propTypes: {
     name: React.PropTypes.string.isRequired,
-    email: React.PropTypes.string,
+    email: React.PropTypes.string.isRequired,
     description: React.PropTypes.string
   },
   render: function(){
@@ -44,21 +37,32 @@ var ContactView = React.createClass({
   },
 
   render: function() {
-    var contactItemList = []
-
-    for(var i = 0; i < contacts.length; i++){
-      contactItemList.push(React.createElement(ContactItem, contacts[i]))
-    }
+    var contactItemElements = this.props.contacts
+      .filter(function(contact) { return contact.email })
+      .map(function(contact) { return React.createElement(ContactItem, contact) })
 
     return (
       React.createElement('div', {className: 'ContactView'},
         React.createElement('h1', {className: 'ContactView-title'}, "Contacts"),
-        React.createElement('ul', {className: 'ContactView-list'}, contactItemList),
+        React.createElement('ul', {className: 'ContactView-list'}, contactItemElements),
         React.createElement(ContactForm, {contact: this.props.newContact})
       )
     )
   },
 })
+
+/**
+ *
+ * Data for testing app
+ *
+*/
+
+// List of contacts
+var contacts = [
+  {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
+  {key: 2, name: "Pablo Azeu", email: "paulazeu@maildev.com"},
+  {key: 3, name: "Joe Doe"},
+]
 
 var newContact = {name: "", email: "", description: ""}
 
