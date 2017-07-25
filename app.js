@@ -17,14 +17,39 @@ var ContactItem = React.createClass({
 // ContactForm Component
 var ContactForm = React.createClass({
   propTypes: {
-    contact: React.PropTypes.object.isRequired
+    contact: React.PropTypes.object.isRequired,
+    change: React.PropTypes.func.isRequired
   },
   render: function(){
+    var oldObject = this.props.contact
+    var change = this.props.change
     return React.createElement('form', {className: 'ContactForm'},
-      React.createElement('input', {placeholder: 'Name (required)', value: this.props.contact.name, type: 'text'}),
-      React.createElement('input', {placeholder: 'Email (required)', value: this.props.contact.email, type: 'email'}),
-      React.createElement('textarea', {placeholder: 'Description', value: this.props.contact.description}, ''),
-      React.createElement('button', {type: 'Submit'}, 'Save')
+      React.createElement('input', {
+        placeholder: 'Name (required)',
+        value: this.props.contact.name,
+        type: 'text',
+        onChange: function(e){
+          change(Object.assign({}, oldObject, {name: e.target.value}))
+        }
+      }),
+      React.createElement('input', {
+        placeholder: 'Email (required)',
+        value: this.props.contact.email,
+        type: 'email',
+        onChange: function(e){
+          change(Object.assign({}, oldObject, {email: e.target.value}))
+        }
+      }),
+      React.createElement('textarea', {
+        placeholder: 'Description',
+        value: this.props.contact.description,
+        onChange: function(e){
+          change(Object.assign({}, oldObject, {description: e.target.value}))
+        }
+      }, ''),
+      React.createElement('button', {
+        type: 'Submit'
+      }, 'Save')
     )
   }
 })
@@ -45,7 +70,12 @@ var ContactView = React.createClass({
       React.createElement('div', {className: 'ContactView'},
         React.createElement('h1', {className: 'ContactView-title'}, "Contacts"),
         React.createElement('ul', {className: 'ContactView-list'}, contactItemElements),
-        React.createElement(ContactForm, {contact: this.props.newContact})
+        React.createElement(ContactForm, {
+          contact: this.props.newContact,
+          change: function(contact){
+            console.log(contact)
+          }
+        })
       )
     )
   },
