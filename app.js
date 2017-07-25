@@ -59,6 +59,7 @@ var ContactView = React.createClass({
   propTypes: {
     contacts: React.PropTypes.array.isRequired,
     newContact: React.PropTypes.object.isRequired,
+    onContactChange: React.PropTypes.func.isRequired
   },
 
   render: function() {
@@ -72,9 +73,7 @@ var ContactView = React.createClass({
         React.createElement('ul', {className: 'ContactView-list'}, contactItemElements),
         React.createElement(ContactForm, {
           contact: this.props.newContact,
-          change: function(contact){
-            console.log(contact)
-          }
+          change: this.props.onContactChange
         })
       )
     )
@@ -83,23 +82,37 @@ var ContactView = React.createClass({
 
 /**
  *
- * Data for testing app
+ * Setting state and data
  *
 */
 
-// List of contacts
-var contacts = [
-  {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
-  {key: 2, name: "Pablo Azeu", email: "paulazeu@maildev.com"},
-  {key: 3, name: "Joe Doe"},
-]
+// The state object
+var state = {}
 
-var newContact = {name: "", email: "", description: ""}
+// Initial state
+setState({
+  contacts: [
+    {key: 1, name: "James K Nelson", email: "james@jamesknelson.com", description: "Front-end Unicorn"},
+    {key: 2, name: "Pablo Azeu", email: "paulazeu@maildev.com"},
+    {key: 3, name: "Joe Doe"},
+  ],
+  newContact: {name: "", email: "", description: ""},
+});
 
-ReactDOM.render(
-  React.createElement(ContactView, {
-    contacts: contacts,
-    newContact: newContact
-  }),
-  document.getElementById('app')
-);
+
+// update data for the form
+function updateNewContact(contact) {
+  setState({ newContact: contact });
+}
+
+// Make the given changes to the state and perform any required housekeeping
+function setState(changes) {
+  Object.assign(state, changes);
+
+  ReactDOM.render(
+    React.createElement(ContactView, Object.assign({}, state, {
+      onContactChange: updateNewContact,
+    })),
+    document.getElementById('app')
+  );
+}
