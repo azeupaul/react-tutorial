@@ -18,7 +18,8 @@ var ContactItem = React.createClass({
 var ContactForm = React.createClass({
   propTypes: {
     contact: React.PropTypes.object.isRequired,
-    change: React.PropTypes.func.isRequired
+    change: React.PropTypes.func.isRequired,
+    submit: React.PropTypes.func.isRequired
   },
   onNameChange: function(e){
     this.props.change(Object.assign({}, this.props.contact, {name: e.target.value}))
@@ -29,8 +30,15 @@ var ContactForm = React.createClass({
   onDescriptionChange: function(e){
     this.props.change(Object.assign({}, this.props.contact, {description: e.target.value}))
   },
+  onSubmit: function(e){
+    e.preventDefault();
+    this.props.submit()
+  },
   render: function(){
-    return React.createElement('form', {className: 'ContactForm'},
+    return React.createElement('form', {
+        className: 'ContactForm',
+        onSubmit: this.onSubmit
+      },
       React.createElement('input', {
         placeholder: 'Name (required)',
         value: this.props.contact.name,
@@ -60,7 +68,8 @@ var ContactView = React.createClass({
   propTypes: {
     contacts: React.PropTypes.array.isRequired,
     newContact: React.PropTypes.object.isRequired,
-    onContactChange: React.PropTypes.func.isRequired
+    onContactChange: React.PropTypes.func.isRequired,
+    submitNewContact: React.PropTypes.func.isRequired
   },
 
   render: function() {
@@ -74,7 +83,8 @@ var ContactView = React.createClass({
         React.createElement('ul', {className: 'ContactView-list'}, contactItemElements),
         React.createElement(ContactForm, {
           contact: this.props.newContact,
-          change: this.props.onContactChange
+          change: this.props.onContactChange,
+          submit: this.props.submitNewContact
         })
       )
     )
@@ -106,6 +116,16 @@ function updateNewContact(contact) {
   setState({ newContact: contact });
 }
 
+// submit new contact
+function submitNewContact(){
+  if(state.newContact.name && state.newContact.email){
+    var contact = Object.assign({}, state.newContact, {key: state.contacts.length + 1 })
+    var newContacts = state.contacts.slice(0).concat(contact)
+    setState({ contacts: newContacts })
+    setState({ newContact: Object.assign({}, {name: "", email: "", description: ""}) })
+  }
+}
+
 // Make the given changes to the state and perform any required housekeeping
 function setState(changes) {
   Object.assign(state, changes);
@@ -113,6 +133,7 @@ function setState(changes) {
   ReactDOM.render(
     React.createElement(ContactView, Object.assign({}, state, {
       onContactChange: updateNewContact,
+      submitNewContact: submitNewContact
     })),
     document.getElementById('app')
   );
