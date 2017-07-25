@@ -35,6 +35,7 @@ var ContactForm = React.createClass({
     this.props.submit()
   },
   render: function(){
+    var errors = this.props.contact.errors || {};
     return React.createElement('form', {
         className: 'ContactForm',
         onSubmit: this.onSubmit
@@ -43,13 +44,15 @@ var ContactForm = React.createClass({
         placeholder: 'Name (required)',
         value: this.props.contact.name,
         type: 'text',
-        onChange: this.onNameChange
+        onChange: this.onNameChange,
+        className: errors.name !== undefined ? 'ContactForm-error' : ''
       }),
       React.createElement('input', {
         placeholder: 'Email (required)',
         value: this.props.contact.email,
         type: 'email',
-        onChange: this.onEmailChange
+        onChange: this.onEmailChange,
+        className: errors.email !== undefined  ? 'ContactForm-error' : ''
       }),
       React.createElement('textarea', {
         placeholder: 'Description',
@@ -97,6 +100,8 @@ var ContactView = React.createClass({
  *
 */
 
+var TEMPLATE_CONTACT = {name: "", email: "", description: "", errors: null}
+
 // The state object
 var state = {}
 
@@ -107,9 +112,14 @@ setState({
     {key: 2, name: "Pablo Azeu", email: "paulazeu@maildev.com"},
     {key: 3, name: "Joe Doe"},
   ],
-  newContact: {name: "", email: "", description: ""},
+  newContact: TEMPLATE_CONTACT,
 });
 
+/**
+ *
+ * Actions
+ *
+ */
 
 // update data for the form
 function updateNewContact(contact) {
@@ -118,12 +128,27 @@ function updateNewContact(contact) {
 
 // submit new contact
 function submitNewContact(){
-  if(state.newContact.name && state.newContact.email){
+  var contact = Object.assign({}, state.newContact, {key: state.contacts.length + 1, errors: {} })
+
+  if(!contact.name){
+    contact.errors.name = true;
+  }
+  if (!/.+@.+\..+/.test(contact.email)) {
+    contact.errors.email = true
+  }
+
+  if(Object.keys(contact.errors).length > 0){
+    setState({ newContact: contact })
+  }else{
+    setState({ contacts: state.contacts.slice(0).concat(contact) })
+    setState({ newContact: Object.assign({}, TEMPLATE_CONTACT) })
+  }
+  /*if(state.newContact.name && state.newContact.email){
     var contact = Object.assign({}, state.newContact, {key: state.contacts.length + 1 })
     var newContacts = state.contacts.slice(0).concat(contact)
     setState({ contacts: newContacts })
-    setState({ newContact: Object.assign({}, {name: "", email: "", description: ""}) })
-  }
+    setState({ newContact: Object.assign({}, TEMPLATE_CONTACT) })
+  }*/
 }
 
 // Make the given changes to the state and perform any required housekeeping
